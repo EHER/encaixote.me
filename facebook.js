@@ -25,6 +25,13 @@ var checkFacebookLogin = function() {
             }
         });
 };
+var getPhotos = function() {
+    FB.api('me/home/photos', function(response) {
+        $(response.data).each(function(index, data) {
+            console.log(data.picture);
+        });
+    });
+};
 
 window.fbAsyncInit = function() {
     FB.init({
