@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-darkness/jquery-ui.css" type="text/css" media="all" />
     <link rel="stylesheet" type="text/css" href="fancybox/jquery.fancybox-1.2.6.css" />
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="fancybox/jquery.fancybox-1.2.6.pack.js"></script>
-    <script type="text/javascript" src="script.js"></script>
 </head>
 
 <body>
     <div id="main">
-        <div id="gallery">
+        <div id="top-bar">
+            <button id="login" class="hide">Login com Facebook</button>
+            <button id="logout" class="hide">Sair</button>
+        </div>
+        <div id="gallery" class="hide">
             <div id="pic-" class="pic" style="top:px;left:px;background:url(http://photos-c.ak.fbcdn.net/hphotos-ak-ash3/531818_272108519543253_100002323205032_601918_297619691_s.jpg) no-repeat 50% 50%; -moz-transform:rotate(deg); -webkit-transform:rotate(deg);">
                 <a class="fancybox" rel="fncbx" href="http://photos-c.ak.fbcdn.net/hphotos-ak-ash3/531818_272108519543253_100002323205032_601918_297619691_b.jpg" target="_blank"></a>
             </div>
@@ -38,14 +38,13 @@
         <div class="clear"></div>
     </div>
 
-    <!-- This is later converted to the modal window with the url of the image: -->
-    <div id="modal" title="Share this picture">
-        <form action="">
-        <fieldset>
-            <label for="url">URL of the image</label>
-            <input type="text" name="url" id="url" class="text ui-widget-content ui-corner-all" onfocus="this.select()" />
-        </fieldset>
-        </form>
+    <div id="fb-root">
+        <!-- you must include this div for the JS SDK to load properly -->
     </div>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="fancybox/jquery.fancybox-1.2.6.pack.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="facebook.js"></script>
 </body>
 </html>

@@ -12,6 +12,10 @@ body{
     font-family:Arial, Helvetica, sans-serif;
 }
 
+.hide{
+    display: none;
+}
+
 #gallery{
     /* The pics container */
     width:100%;
