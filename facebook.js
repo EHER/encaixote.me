@@ -25,10 +25,19 @@ var checkFacebookLogin = function() {
             }
         });
 };
+
+var addPhoto = function(id, url) {
+    photo  = '<div id="pic-" class="pic" style="top:px;left:px;background:url('+url+') no-repeat 50% 50%; -moz-transform:rotate(deg); -webkit-transform:rotate(deg);">';
+    photo += '<a class="fancybox" rel="fncbx" href="'+url+'" target="_blank"></a>';
+    photo += '</div>';
+    $("#gallery").append(photo);
+};
+
 var getPhotos = function() {
     FB.api('me/home/photos', function(response) {
         $(response.data).each(function(index, data) {
-            console.log(data.picture);
+            console.log(data);
+            addPhoto(data.id, data.picture);
         });
     });
 };
