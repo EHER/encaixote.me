@@ -105,7 +105,7 @@ var addPhoto = function(id, url) {
         position_left = Math.floor(Math.random()*100)*8;
         position_rotate = Math.floor(Math.random()*20)-10;
 
-        photo  = '<div id="pic-'+id+'" class="pic" style="top:'+position_top+'px;left:'+position_left+'px;background:url('+url_small+') no-repeat 50% 50%; -moz-transform:rotate('+position_rotate+'deg); -webkit-transform:rotate('+position_rotate+'deg);">';
+        photo  = '<div id="pic-'+id+'" class="pic" style="top:'+position_top+'px;left:'+position_left+'px;background:#eee url('+url_small+') no-repeat 50% 50%; -moz-transform:rotate('+position_rotate+'deg); -webkit-transform:rotate('+position_rotate+'deg);">';
         photo += '<a class="fancybox" rel="fncbx" href="'+url_big+'" target="_blank"></a>';
         photo += '</div>';
         $("#gallery").append(photo);
