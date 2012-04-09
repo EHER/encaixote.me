@@ -54,17 +54,61 @@ var magica = function() {
         overlayShow:false
     });
 
-    /* Converting the share box into a droppable: */
-    $('.drop-box').droppable({
+    $('#like').droppable({
         hoverClass: 'active',
         drop:function(event,ui){
-            /* Fill the URL text field with the URL of the image. */
-            /* The id of the image is appended as a hash #pic-123 */
-            $('#url').val(location.href.replace(location.hash,'')+'#'+ui.draggable.attr('id'));
-            $('#modal').dialog('open');
+            element = ui.draggable[0];
+            $("#"+element.id).fadeOut();
+            console.log("like");
+            graph_id = element.id.replace("pic-", "");
+            console.log("graph_id " + graph_id);
+            FB.api(graph_id + '/likes', 'post', function(response) {
+                console.log(response);
+            });
         }
     });
 
+    $('#share').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            $("#"+element.id).fadeOut();
+            console.log("share");
+
+            graph_id = element.id.replace("pic-", "");
+            console.log("graph_id " + graph_id);
+            FB.api(graph_id + '/shares', 'post', function(response) {
+                console.log(response);
+            });
+        }
+    });
+
+    $('#like_share').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            $("#"+element.id).fadeOut();
+            console.log("like + share");
+
+            graph_id = element.id.replace("pic-", "");
+            console.log("graph_id " + graph_id);
+            FB.api(graph_id + '/likes', 'post', function(response) {
+                console.log(response);
+            });
+            FB.api(graph_id + '/shares', 'post', function(response) {
+                console.log(response);
+            });
+        }
+    });
+
+    $('#nothing').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            $("#"+element.id).fadeOut();
+            console.log("nothing");
+        }
+    });
 };
 
 var checkFacebookLogin = function() {
@@ -142,11 +186,12 @@ $(document).ready(function(){
             } else {
                 console.log('User cancelled login or did not fully authorize.');
             }
-        }, {'scope': 'read_stream'});
+        }, {'scope': 'read_stream,publish_stream'});
     });
 
     $("#logout").bind("click",function(e){
         FB.logout(function(response) {
+            $("#name").html("");
             // user is now logged out
         });
     });
