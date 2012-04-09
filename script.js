@@ -80,6 +80,9 @@ var checkFacebookLogin = function() {
                 // and signed request each expire
                 var uid = response.authResponse.userID;
                 var accessToken = response.authResponse.accessToken;
+                FB.api('/me', function(response) {
+                    $("#name").html(response.name);
+                });
                 getPhotos();
             } else if (response.status === 'not_authorized') {
                 // the user is logged in to Facebook, 
