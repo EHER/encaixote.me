@@ -16,6 +16,10 @@ body{
     display: none;
 }
 
+#top-bar{
+    float: right;
+}
+
 #gallery{
     /* The pics container */
     width:100%;
