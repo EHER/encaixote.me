@@ -1,7 +1,7 @@
 window.fbAsyncInit = function() {
     FB.init({
-        appId      : '340748665982158', // App ID
-        channelUrl : '//localhost/encaixote.me/channel.php', // Channel File
+        appId      : '359200690783172', // App ID
+        channelUrl : '//encaixote.me/channel.php', // Channel File
         status     : true, // check login status
         cookie     : true, // enable cookies to allow the server to access the session
         xfbml      : true  // parse XFBML
