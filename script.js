@@ -73,11 +73,15 @@ var magica = function() {
         drop:function(event,ui){
             element = ui.draggable[0];
             $("#"+element.id).fadeOut();
+            url_photo = $(element).find("a:fist-child").attr("href");
             console.log("share");
 
             graph_id = element.id.replace("pic-", "");
             console.log("graph_id " + graph_id);
-            FB.api(graph_id + '/shares', 'post', function(response) {
+            FB.api('me/feed', 'post', {
+                'picture': url_photo,
+                'type': 'photo'
+            },function(response) {
                 console.log(response);
             });
         }
@@ -162,6 +166,7 @@ var addPhoto = function(id, url) {
 var getPhotos = function() {
     FB.api('me/home/photos', function(response) {
         $(response.data).each(function(index, data) {
+            console.log(data);
             addPhoto(data.id, data.picture);
         });
         magica();
