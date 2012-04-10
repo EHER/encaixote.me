@@ -75,14 +75,17 @@ var magica = function() {
             $("#"+element.id).fadeOut();
             console.log("share");
 
-            url_photo = $(element).find("a:fist-child").attr("href");
-            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
-
             graph_id = element.id.replace("pic-", "");
             console.log("graph_id " + graph_id);
+
+            url_photo = $(element).find("a:fist-child").attr("href");
+            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
+            url_share = 'http://www.facebook.com/' + graph_id.replace('_', '/posts/');
+
             FB.api('me/feed', 'post', {
+                'name': 'http://www.encaixote.me/',
                 'picture': url_proxy,
-                'type': 'photo'
+                'link': url_share
             },function(response) {
                 console.log(response);
             });
@@ -96,20 +99,22 @@ var magica = function() {
             $("#"+element.id).fadeOut();
             console.log("like + share");
 
-            url_photo = $(element).find("a:fist-child").attr("href");
-            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
-
             graph_id = element.id.replace("pic-", "");
             console.log("graph_id " + graph_id);
 
-            FB.api(graph_id + '/likes', 'post', function(response) {
+            url_photo = $(element).find("a:fist-child").attr("href");
+            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
+            url_share = 'http://www.facebook.com/' + graph_id.replace('_', '/posts/');
+
+            FB.api('me/feed', 'post', {
+                'name': 'http://www.encaixote.me/',
+                'picture': url_proxy,
+                'link': url_share
+            },function(response) {
                 console.log(response);
             });
 
-            FB.api('me/feed', 'post', {
-                'picture': url_proxy,
-                'type': 'photo'
-            },function(response) {
+            FB.api(graph_id + '/likes', 'post', function(response) {
                 console.log(response);
             });
         }
