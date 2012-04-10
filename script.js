@@ -73,13 +73,15 @@ var magica = function() {
         drop:function(event,ui){
             element = ui.draggable[0];
             $("#"+element.id).fadeOut();
-            url_photo = $(element).find("a:fist-child").attr("href");
             console.log("share");
+
+            url_photo = $(element).find("a:fist-child").attr("href");
+            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
 
             graph_id = element.id.replace("pic-", "");
             console.log("graph_id " + graph_id);
             FB.api('me/feed', 'post', {
-                'picture': url_photo,
+                'picture': url_proxy,
                 'type': 'photo'
             },function(response) {
                 console.log(response);
@@ -94,12 +96,20 @@ var magica = function() {
             $("#"+element.id).fadeOut();
             console.log("like + share");
 
+            url_photo = $(element).find("a:fist-child").attr("href");
+            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
+
             graph_id = element.id.replace("pic-", "");
             console.log("graph_id " + graph_id);
+
             FB.api(graph_id + '/likes', 'post', function(response) {
                 console.log(response);
             });
-            FB.api(graph_id + '/shares', 'post', function(response) {
+
+            FB.api('me/feed', 'post', {
+                'picture': url_proxy,
+                'type': 'photo'
+            },function(response) {
                 console.log(response);
             });
         }
