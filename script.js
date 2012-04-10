@@ -53,81 +53,6 @@ var magica = function() {
         zoomSpeedOut: 300,
         overlayShow:false
     });
-
-    $('#like').droppable({
-        hoverClass: 'active',
-        drop:function(event,ui){
-            element = ui.draggable[0];
-            $("#"+element.id).fadeOut();
-            console.log("like");
-            graph_id = element.id.replace("pic-", "");
-            console.log("graph_id " + graph_id);
-            FB.api(graph_id + '/likes', 'post', function(response) {
-                console.log(response);
-            });
-        }
-    });
-
-    $('#share').droppable({
-        hoverClass: 'active',
-        drop:function(event,ui){
-            element = ui.draggable[0];
-            $("#"+element.id).fadeOut();
-            console.log("share");
-
-            graph_id = element.id.replace("pic-", "");
-            console.log("graph_id " + graph_id);
-
-            url_photo = $(element).find("a:fist-child").attr("href");
-            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
-            url_share = 'http://www.facebook.com/' + graph_id.replace('_', '/posts/');
-
-            FB.api('me/feed', 'post', {
-                'name': 'http://www.encaixote.me/',
-                'picture': url_proxy,
-                'link': url_share
-            },function(response) {
-                console.log(response);
-            });
-        }
-    });
-
-    $('#like_share').droppable({
-        hoverClass: 'active',
-        drop:function(event,ui){
-            element = ui.draggable[0];
-            $("#"+element.id).fadeOut();
-            console.log("like + share");
-
-            graph_id = element.id.replace("pic-", "");
-            console.log("graph_id " + graph_id);
-
-            url_photo = $(element).find("a:fist-child").attr("href");
-            url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
-            url_share = 'http://www.facebook.com/' + graph_id.replace('_', '/posts/');
-
-            FB.api('me/feed', 'post', {
-                'name': 'http://www.encaixote.me/',
-                'picture': url_proxy,
-                'link': url_share
-            },function(response) {
-                console.log(response);
-            });
-
-            FB.api(graph_id + '/likes', 'post', function(response) {
-                console.log(response);
-            });
-        }
-    });
-
-    $('#nothing').droppable({
-        hoverClass: 'active',
-        drop:function(event,ui){
-            element = ui.draggable[0];
-            $("#"+element.id).fadeOut();
-            console.log("nothing");
-        }
-    });
 };
 
 var checkFacebookLogin = function() {
@@ -179,12 +104,56 @@ var addPhoto = function(id, url) {
 };
 
 var getPhotos = function() {
-    FB.api('me/home/photos', function(response) {
+    get_photos_url = 'me/home/photos?limit=10';
+    if (monster.get("until")) {
+        get_photos_url += "&" + monster.get("until");
+    }
+    FB.api(get_photos_url, function(response) {
         $(response.data).each(function(index, data) {
-            console.log(data);
             addPhoto(data.id, data.picture);
         });
+        monster.set(
+            'until',
+            getUntilFromUrl(response.paging.next)
+            );
         magica();
+    });
+};
+
+var getUntilFromUrl = function(url) {
+    return /until=[0-9]*/.exec(url);
+};
+
+var removeElement = function(element) {
+    $("#"+element.id).fadeOut(500, function(e) {
+        $(this).remove();
+        if ($("#gallery .pic").length === 0) {
+            getPhotos();
+        }
+    });
+};
+
+var likePicture = function(element) {
+    graph_id = element.id.replace("pic-", "");
+
+    FB.api(graph_id + '/likes', 'post', function(response) {
+        console.log(response);
+    });
+};
+
+var sharePicture = function(element) {
+    graph_id = element.id.replace("pic-", "");
+
+    url_photo = $(element).find("a:fist-child").attr("href");
+    url_proxy = 'http://encaixote.me/photo/'+ Base64.encode(url_photo);
+    url_share = 'http://www.facebook.com/' + graph_id.replace('_', '/posts/');
+
+    FB.api('me/feed', 'post', {
+        'name': 'http://www.encaixote.me/',
+        'picture': url_proxy,
+        'link': url_share
+    },function(response) {
+        console.log(response);
     });
 };
 
@@ -220,23 +189,43 @@ $(document).ready(function(){
         getPhotos();
     });
 
-    /* Converts the div with id="modal" into a modal window  */
-    $("#modal").dialog({
-        bgiframe: true,
-        modal: true,
-        autoOpen:false,
-        buttons: {
-            Ok: function() {
-                $(this).dialog('close');
-            }
+    $('#like').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            removeElement(element);
+            likePicture(element);
+            console.log("like");
         }
     });
 
-    if(location.hash.indexOf('#pic-')!=-1)
-    {
-        /* Checks whether a hash is present in the URL */
-        /* and shows the respective image */
-        $(location.hash+' a.fancybox').click();
-    }
+    $('#share').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            removeElement(element);
+            sharePicture(element);
+            console.log("share");
+        }
+    });
 
+    $('#like_share').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            removeElement(element);
+            likePicture(element);
+            sharePicture(element);
+            console.log("like + share");
+        }
+    });
+
+    $('#nothing').droppable({
+        hoverClass: 'active',
+        drop:function(event,ui){
+            element = ui.draggable[0];
+            removeElement(element);
+            console.log("nothing");
+        }
+    });
 });
