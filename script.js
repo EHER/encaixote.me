@@ -71,7 +71,9 @@ var checkFacebookLogin = function() {
                 FB.api('/me', function(response) {
                     $("#name").html(response.name);
                 });
-                getPhotos();
+                if ($("#gallery .pic").length === 0) {
+                    getPhotos();
+                }
             } else if (response.status === 'not_authorized') {
                 // the user is logged in to Facebook, 
                 // but has not authenticated your app
