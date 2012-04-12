@@ -1,3 +1,40 @@
+var addPhoto = function(id, url) {
+    if(id !== undefined && url !== undefined) {
+        url_small = url;
+        url_big = url.replace("_s.jpg", "_b.jpg");
+
+        position_top = Math.floor(Math.random()*100)*3;
+        position_left = Math.floor(Math.random()*100)*8;
+        position_rotate = Math.floor(Math.random()*20)-10;
+
+        photo  = '<div id="pic-'+id+'" class="pic" style="top:'+position_top+'px;left:'+position_left+'px;background:#eee url('+url_small+') no-repeat 50% 50%; -moz-transform:rotate('+position_rotate+'deg); -webkit-transform:rotate('+position_rotate+'deg);">';
+        photo += '<a class="fancybox" rel="fncbx" href="'+url_big+'" target="_blank"></a>';
+        photo += '</div>';
+        $("#gallery").append(photo);
+    }
+};
+
+var getPhotos = function() {
+    get_photos_url = 'me/home/photos?limit=10';
+    if (monster.get("until")) {
+        get_photos_url += "&" + monster.get("until");
+    }
+    FB.api(get_photos_url, function(response) {
+        $(response.data).each(function(index, data) {
+            addPhoto(data.id, data.picture);
+        });
+        monster.set(
+            'until',
+            getUntilFromUrl(response.paging.next)
+            );
+        magica();
+    });
+};
+
+var getUntilFromUrl = function(url) {
+    return /until=[0-9]*/.exec(url);
+};
+
 var magica = function() {
     var preventClick=false;
 
@@ -89,61 +126,18 @@ var checkFacebookLogin = function() {
         });
 };
 
-var addPhoto = function(id, url) {
-    if(id !== undefined && url !== undefined) {
-        url_small = url;
-        url_big = url.replace("_s.jpg", "_b.jpg");
-
-        position_top = Math.floor(Math.random()*100)*3;
-        position_left = Math.floor(Math.random()*100)*8;
-        position_rotate = Math.floor(Math.random()*20)-10;
-
-        photo  = '<div id="pic-'+id+'" class="pic" style="top:'+position_top+'px;left:'+position_left+'px;background:#eee url('+url_small+') no-repeat 50% 50%; -moz-transform:rotate('+position_rotate+'deg); -webkit-transform:rotate('+position_rotate+'deg);">';
-        photo += '<a class="fancybox" rel="fncbx" href="'+url_big+'" target="_blank"></a>';
-        photo += '</div>';
-        $("#gallery").append(photo);
-    }
-};
-
-var getPhotos = function() {
-    get_photos_url = 'me/home/photos?limit=10';
-    if (monster.get("until")) {
-        get_photos_url += "&" + monster.get("until");
-    }
-    FB.api(get_photos_url, function(response) {
-        $(response.data).each(function(index, data) {
-            addPhoto(data.id, data.picture);
-        });
-        monster.set(
-            'until',
-            getUntilFromUrl(response.paging.next)
-            );
-        magica();
-    });
-};
-
-var getUntilFromUrl = function(url) {
-    return /until=[0-9]*/.exec(url);
-};
-
-var removeElement = function(element) {
-    $("#"+element.id).fadeOut(500, function(e) {
-        $(this).remove();
-        if ($("#gallery .pic").length === 0) {
-            getPhotos();
-        }
-    });
-};
-
-var likePicture = function(element) {
+var like = function(element) {
     graph_id = element.id.replace("pic-", "");
 
     FB.api(graph_id + '/likes', 'post', function(response) {
         console.log(response);
     });
+
+    removeElement(element);
+    console.log("like");
 };
 
-var sharePicture = function(element) {
+var share = function(element) {
     graph_id = element.id.replace("pic-", "");
 
     url_photo = $(element).find("a:fist-child").attr("href");
@@ -156,6 +150,23 @@ var sharePicture = function(element) {
         'link': url_share
     },function(response) {
         console.log(response);
+    });
+
+    removeElement(element);
+    console.log("share");
+};
+
+var nothing = function(element) {
+    removeElement(element);
+    console.log("nothing");
+};
+
+var removeElement = function(element) {
+    $("#"+element.id).fadeOut(500, function(e) {
+        $(this).remove();
+        if ($("#gallery .pic").length === 0) {
+            getPhotos();
+        }
     });
 };
 
@@ -194,40 +205,29 @@ $(document).ready(function(){
     $('#like').droppable({
         hoverClass: 'active',
         drop:function(event,ui){
-            element = ui.draggable[0];
-            removeElement(element);
-            likePicture(element);
-            console.log("like");
+            like(ui.draggable[0]);
         }
     });
 
     $('#share').droppable({
         hoverClass: 'active',
         drop:function(event,ui){
-            element = ui.draggable[0];
-            removeElement(element);
-            sharePicture(element);
-            console.log("share");
+            share(ui.draggable[0]);
         }
     });
 
     $('#like_share').droppable({
         hoverClass: 'active',
         drop:function(event,ui){
-            element = ui.draggable[0];
-            removeElement(element);
-            likePicture(element);
-            sharePicture(element);
-            console.log("like + share");
+            like(ui.draggable[0]);
+            share(ui.draggable[0]);
         }
     });
 
     $('#nothing').droppable({
         hoverClass: 'active',
         drop:function(event,ui){
-            element = ui.draggable[0];
-            removeElement(element);
-            console.log("nothing");
+            nothing(ui.draggable[0]);
         }
     });
 });
