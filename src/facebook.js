@@ -17,7 +17,7 @@ window.fbAsyncInit = function() {
 var photoRepository = new PhotoRepository("#gallery");
 
 var isUserLogged = function(logged) {
-    if (logged !== undefined) {
+    if (logged) {
         $("#login").hide();
         $("#logout").show();
         $("#gallery").show();
