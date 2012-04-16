@@ -21,7 +21,8 @@ PhotoRepository.prototype.getLatest = function() {
         if (response.paging !== undefined) {
             monster.set(
                 'since',
-                /since=[0-9]*/.exec(response.paging.previous)
+                /since=[0-9]*/.exec(response.paging.previous),
+                0
                 );
         }
         magica();
@@ -43,7 +44,8 @@ PhotoRepository.prototype.getOld = function() {
         });
         monster.set(
             'until',
-            /until=[0-9]*/.exec(response.paging.next)
+            /until=[0-9]*/.exec(response.paging.next),
+            0
             );
         magica();
     });
