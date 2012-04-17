@@ -6,11 +6,12 @@ PhotoRepository.prototype.getMore = function() {
 };
 
 PhotoRepository.prototype.getLatest = function() {
-    get_photos_url = 'me/home/photos?limit=5';
+    var get_photos_url = 'me/home/photos?limit=5';
     if (monster.get("since")) {
         get_photos_url += "&" + monster.get("since");
     }
     FB.api(get_photos_url, function(response) {
+
         $(response.data).each(function(index, data) {
             PhotoRepository.prototype.toGallery(
                 data.id,
@@ -30,7 +31,7 @@ PhotoRepository.prototype.getLatest = function() {
 };
 
 PhotoRepository.prototype.getOld = function() {
-    get_photos_url = 'me/home/photos?limit=5';
+    var get_photos_url = 'me/home/photos?limit=5';
     if (monster.get("until")) {
         get_photos_url += "&" + monster.get("until");
     }
