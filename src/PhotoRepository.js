@@ -62,3 +62,8 @@ PhotoRepository.prototype.toGallery = function(id, url, description) {
         $("#gallery").append(photo.to_html());
     }
 };
+
+PhotoRepository.prototype.share = function(photo) {
+    var photoHash = base64.encode(photo.url_big);
+    $.get("share/".photoHash);
+};

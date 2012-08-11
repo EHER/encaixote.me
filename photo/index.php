@@ -2,8 +2,6 @@
 
 $url = base64_decode($_SERVER['REDIRECT_QUERY_STRING']);
 
-//header('Content-Type: image/jpg');
-
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_HEADER, 0);
