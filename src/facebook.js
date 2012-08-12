@@ -60,7 +60,6 @@ window.fbAsyncInit = function () {
     FB.Event.subscribe('auth.authResponseChange', function (response) {
         checkFacebookLogin();
     });
-    checkFacebookLogin();
 };
 
 // Load the SDK Asynchronously
