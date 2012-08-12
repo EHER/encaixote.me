@@ -1,7 +1,9 @@
 /*jslint browser: true*/
 /*global $: true, photoRepository: true, Photo: true*/
 'use strict';
-var magica = function () {
+var magica, removeElement, like, share, like_share, nothing;
+
+magica = function () {
     var preventClick = false;
 
     $(".pic a").bind("click", function (e) {
@@ -25,14 +27,10 @@ var magica = function () {
         }
     });
 
-    $('.pic').mousedown(function (e) {
-
-        /* Executed on image click */
-
+    $('.pic').mousedown(function (e) { /* Executed on image click */
         var maxZ = 0;
 
         /* Find the max z-index property: */
-
         $('.pic').each(function () {
             var thisZ = parseInt($(this).css('zIndex'), 10);
             if (thisZ > maxZ) {
@@ -55,41 +53,43 @@ var magica = function () {
         zoomSpeedOut: 300,
         overlayShow: false
     });
-},
+};
 
-    removeElement = function (element) {
-        $("#" + element.id).fadeOut(500, function (e) {
-            $(this).remove();
-            if ($("#gallery .pic").length === 0) {
-                photoRepository.getMore();
-            }
-        });
-    },
+removeElement = function (element) {
+    $("#" + element.id).fadeOut(500, function (e) {
+        $(this).remove();
+        if ($("#gallery .pic").length === 0) {
+            photoRepository.getMore();
+        }
+    });
+};
 
-    like = function (element) {
-        var id = element.id.replace("pic-", ""),
-            photo = new Photo(id);
-        photo.like();
-        removeElement(element);
-        console.log("like");
-    },
+like = function (element) {
+    var id, photo;
+    id = element.id.replace("pic-", "");
+    photo = new Photo(id);
+    photo.like();
+    removeElement(element);
+    console.log("like");
+};
 
-    share = function (element) {
-        var id = element.id.replace("pic-", ""),
-            url = $(element).find("a:fist-child").attr("href"),
-            description = $(element).find("a:fist-child").attr("title"),
-            photo = new Photo(id);
-        photo.set_urls(url);
-        photo.description = description;
-        photo.share();
-        removeElement(element);
-        console.log("share");
-    },
+share = function (element) {
+    var id, url, description, photo;
+    id = element.id.replace("pic-", "");
+    url = $(element).find("a:fist-child").attr("href");
+    description = $(element).find("a:fist-child").attr("title");
+    photo = new Photo(id);
+    photo.set_urls(url);
+    photo.description = description;
+    photo.share();
+    removeElement(element);
+    console.log("share");
+};
 
-    nothing = function (element) {
-        removeElement(element);
-        console.log("nothing");
-    };
+nothing = function (element) {
+    removeElement(element);
+    console.log("nothing");
+};
 
 $(document).ready(function () {
     $('#like').droppable({
