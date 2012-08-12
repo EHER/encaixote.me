@@ -3,9 +3,9 @@ default: help
 help:
 	@echo "Comandos disponíveis:"
 	@echo "test\t\t Roda os testes"
-	@echo "jslint\t\t Confera a qualidade do código"
+	@echo "jslint\t\t Confere a qualidade do código"
 
-test: jslint
+test:
 	phantomjs lib/run_jasmine_test.coffee SpecRunner.html
 
 jslint:
