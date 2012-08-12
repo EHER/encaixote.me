@@ -1,7 +1,10 @@
-var magica = function() {
-    var preventClick=false;
+/*jslint browser: true*/
+/*global $: true, photoRepository: true, Photo: true*/
+'use strict';
+var magica = function () {
+    var preventClick = false;
 
-    $(".pic a").bind("click",function(e){
+    $(".pic a").bind("click", function (e) {
         /* This function stops the drag from firing a click event and showing the lightbox */
         if (preventClick) {
             e.stopImmediatePropagation();
@@ -12,19 +15,17 @@ var magica = function() {
     $(".pic").draggable({
         /* Converting the images into draggable objects */
         containment: 'parent',
-        start: function(e,ui){
+        start: function (e, ui) {
             /* This will stop clicks from occuring while dragging */
-            preventClick=true;
+            preventClick = true;
         },
-
-        stop: function(e, ui) {
+        stop: function (e, ui) {
             /* Wait for 250 milliseconds before re-enabling the clicks */
-            setTimeout(function(){ preventClick=false; }, 250);
+            setTimeout(function () { preventClick = false; }, 250);
         }
     });
 
-
-    $('.pic').mousedown(function(e){
+    $('.pic').mousedown(function (e) {
 
         /* Executed on image click */
 
@@ -32,80 +33,82 @@ var magica = function() {
 
         /* Find the max z-index property: */
 
-        $('.pic').each(function(){
-            var thisZ = parseInt($(this).css('zIndex'))
-            if(thisZ>maxZ) maxZ=thisZ;
+        $('.pic').each(function () {
+            var thisZ = parseInt($(this).css('zIndex'), 10);
+            if (thisZ > maxZ) {
+                maxZ = thisZ;
+            }
         });
 
         /* Clicks can occur in the picture container (with class pic) and in the link inside it */
-        if($(e.target).hasClass("pic"))
-    {
-        /* Show the clicked image on top of all the others: */
-        $(e.target).css({zIndex:maxZ+1});
-    }
-        else $(e.target).closest('.pic').css({zIndex:maxZ+1});
+        if ($(e.target).hasClass("pic")) {
+            /* Show the clicked image on top of all the others: */
+            $(e.target).css({zIndex: maxZ + 1});
+        } else {
+            $(e.target).closest('.pic').css({zIndex: maxZ + 1});
+        }
     });
 
     /* Converting all the links to a fancybox gallery */
     $("a.fancybox").fancybox({
         zoomSpeedIn: 300,
         zoomSpeedOut: 300,
-        overlayShow:false
+        overlayShow: false
     });
-};
+},
 
-var like = function(element) {
-    var id = element.id.replace("pic-", "");
-    var photo = new Photo(id);
-    photo.like();
-    removeElement(element);
-    console.log("like");
-};
+    removeElement = function (element) {
+        $("#" + element.id).fadeOut(500, function (e) {
+            $(this).remove();
+            if ($("#gallery .pic").length === 0) {
+                photoRepository.getMore();
+            }
+        });
+    },
 
-var share = function(element) {
-    var id = element.id.replace("pic-", "");
-    var url = $(element).find("a:fist-child").attr("href");
-    var description = $(element).find("a:fist-child").attr("title");
-    var photo = new Photo(id);
-    photo.set_urls(url);
-    photo.description = description;
-    photo.share();
-    removeElement(element);
-    console.log("share");
-};
+    like = function (element) {
+        var id = element.id.replace("pic-", ""),
+            photo = new Photo(id);
+        photo.like();
+        removeElement(element);
+        console.log("like");
+    },
 
-var nothing = function(element) {
-    removeElement(element);
-    console.log("nothing");
-};
+    share = function (element) {
+        var id = element.id.replace("pic-", ""),
+            url = $(element).find("a:fist-child").attr("href"),
+            description = $(element).find("a:fist-child").attr("title"),
+            photo = new Photo(id);
+        photo.set_urls(url);
+        photo.description = description;
+        photo.share();
+        removeElement(element);
+        console.log("share");
+    },
 
-var removeElement = function(element) {
-    $("#"+element.id).fadeOut(500, function(e) {
-        $(this).remove();
-        if ($("#gallery .pic").length === 0) {
-            photoRepository.getMore();
-        }
-    });
-};
+    nothing = function (element) {
+        removeElement(element);
+        console.log("nothing");
+    };
 
-$(document).ready(function(){
+$(document).ready(function () {
     $('#like').droppable({
         hoverClass: 'active',
-        drop:function(event,ui){
+        drop: function (event, ui) {
             like(ui.draggable[0]);
         }
     });
 
     $('#share').droppable({
         hoverClass: 'active',
-        drop:function(event,ui){
+        drop: function (event, ui) {
             share(ui.draggable[0]);
         }
     });
 
     $('#like_share').droppable({
         hoverClass: 'active',
-        drop:function(event,ui){
+        drop: function (event, ui) {
             like(ui.draggable[0]);
             share(ui.draggable[0]);
         }
@@ -113,7 +116,7 @@ $(document).ready(function(){
 
     $('#nothing').droppable({
         hoverClass: 'active',
-        drop:function(event,ui){
+        drop: function (event, ui) {
             nothing(ui.draggable[0]);
         }
     });
