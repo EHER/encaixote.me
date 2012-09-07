@@ -1,9 +1,56 @@
 /*jslint browser: true*/
-/*global $: true, photoRepository: true, Photo: true*/
 'use strict';
-var magica, removeElement, like, share, like_share, nothing;
 
-magica = function () {
+var $ = require('jquery'),
+    PhotoRepository = require('../src/PhotoRepository').PhotoRepository,
+    Photo = require('../src/Photo').Photo;
+
+function removeElement(element) {
+    var photoRepository;
+
+    $("#" + element.id).fadeOut(500, function (e) {
+        $(this).remove();
+        if ($("#gallery .pic").length === 0) {
+            photoRepository = new PhotoRepository(FB);
+            photoRepository.getMore();
+        }
+    });
+}
+
+function likeAction(element) {
+    var id, photo, photoRepository;
+
+    id = element.id.replace("pic-", "");
+    photo = new Photo(id);
+
+    photoRepository = new PhotoRepository(FB);
+    photoRepository.like(photo);
+
+    removeElement(element);
+}
+
+function shareAction(element) {
+    var id, url, description, photo, photoRepository;
+
+    id = element.id.replace("pic-", "");
+    url = $(element).find("a:fist-child").attr("href");
+    description = $(element).find("a:fist-child").attr("title");
+
+    photo = new Photo(id);
+    photo.set_urls(url);
+    photo.description = description;
+
+    photoRepository = new PhotoRepository(FB);
+    photoRepository.share(photo);
+
+    removeElement(element);
+}
+
+function nothingAction(element) {
+    removeElement(element);
+}
+
+function makeDraggable() {
     var preventClick = false;
 
     $(".pic a").bind("click", function (e) {
@@ -53,71 +100,35 @@ magica = function () {
         zoomSpeedOut: 300,
         overlayShow: false
     });
-};
+}
 
-removeElement = function (element) {
-    $("#" + element.id).fadeOut(500, function (e) {
-        $(this).remove();
-        if ($("#gallery .pic").length === 0) {
-            photoRepository.getMore();
-        }
-    });
-};
-
-like = function (element) {
-    var id, photo;
-    id = element.id.replace("pic-", "");
-    photo = new Photo(id);
-    photo.like();
-    removeElement(element);
-    console.log("like");
-};
-
-share = function (element) {
-    var id, url, description, photo;
-    id = element.id.replace("pic-", "");
-    url = $(element).find("a:fist-child").attr("href");
-    description = $(element).find("a:fist-child").attr("title");
-    photo = new Photo(id);
-    photo.set_urls(url);
-    photo.description = description;
-    photo.share();
-    removeElement(element);
-    console.log("share");
-};
-
-nothing = function (element) {
-    removeElement(element);
-    console.log("nothing");
-};
-
-$(document).ready(function () {
+function makeDroppable() {
     $('#like').droppable({
         hoverClass: 'active',
         drop: function (event, ui) {
-            like(ui.draggable[0]);
+            likeAction(ui.draggable[0]);
         }
     });
 
     $('#share').droppable({
         hoverClass: 'active',
         drop: function (event, ui) {
-            share(ui.draggable[0]);
+            shareAction(ui.draggable[0]);
         }
     });
 
     $('#like_share').droppable({
         hoverClass: 'active',
         drop: function (event, ui) {
-            like(ui.draggable[0]);
-            share(ui.draggable[0]);
+            likeAction(ui.draggable[0]);
+            shareAction(ui.draggable[0]);
         }
     });
 
     $('#nothing').droppable({
         hoverClass: 'active',
         drop: function (event, ui) {
-            nothing(ui.draggable[0]);
+            nothingAction(ui.draggable[0]);
         }
     });
-});
+}

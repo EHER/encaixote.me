@@ -1,19 +1,18 @@
-/*jslint browser: true*/
-/*global Base64: true, FB: true*/
 'use strict';
-var Photo = function (id) {
-    this.id                = "";
-    this.url_small         = "";
-    this.url_big           = "";
-    this.description       = "";
-    this.position_top      = 0;
-    this.position_left     = 0;
-    this.position_rotate   = 0;
+var Base64 = require('../lib/base64'),
+    Photo = function (id) {
+        this.id                = "";
+        this.url_small         = "";
+        this.url_big           = "";
+        this.description       = "";
+        this.position_top      = 0;
+        this.position_left     = 0;
+        this.position_rotate   = 0;
 
-    if (id !== undefined) {
-        this.id = id;
-    }
-};
+        if (id !== undefined) {
+            this.id = id;
+        }
+    };
 
 Photo.prototype.set_urls = function (url) {
     if (url !== "undefined") {
@@ -36,21 +35,4 @@ Photo.prototype.to_html = function (element) {
     return html;
 };
 
-Photo.prototype.share = function () {
-    var url_proxy = 'http://encaixote.me/photo/' + Base64.encode(this.url_small),
-        url_share = 'http://www.facebook.com/' + this.id.replace('_', '/posts/');
-
-    FB.api('me/feed', 'post', {
-        'name': this.description,
-        'picture': url_proxy,
-        'link': url_share
-    }, function (response) {
-        console.log(response);
-    });
-};
-
-Photo.prototype.like = function () {
-    FB.api(this.id + '/likes', 'post', function (response) {
-        console.log(response);
-    });
-};
+exports.Photo = Photo;

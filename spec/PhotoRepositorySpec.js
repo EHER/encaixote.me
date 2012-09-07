@@ -1,44 +1,59 @@
-/*global describe:true, it:true, xit: true, expect: true, PhotoRepository: true,
- Photo: true, beforeEach: true, jasmine: true, spyOn: true*/
 'use strict';
+
+var sinon = require('sinon'),
+    assert = require('assert'),
+    monster = require('../lib/monster').monster,
+    Photo = require('../src/Photo').Photo,
+    Base64 = require('../lib/Base64').Base64,
+    PhotoRepository = require('../src/PhotoRepository').PhotoRepository;
+
+
 describe("PhotoReposiory", function () {
-    beforeEach(function () {
-        jasmine.Ajax.useMock();
-        jasmine.getFixtures().containerId = '#gallery';
-    });
-    xit("should can get last photos", function () {
-        var monsterSpy, FBSpy, photoRepository;
+    it("should can get last photos", function () {
+        var photoRepository, monsterMock, facebook;
 
-        monsterSpy = jasmine.createSpy('monster');
-        monsterSpy.get = function () {};
-        spyOn(monsterSpy, 'get');
+        monsterMock = sinon.mock(monster).expects("get").once();
 
-        FBSpy = jasmine.createSpy('FB');
-        FBSpy.api = function () {};
-        spyOn(FBSpy, 'api');
+        facebook = {};
+        facebook.api = sinon.stub();
 
-        photoRepository = new PhotoRepository();
+        photoRepository = new PhotoRepository(facebook);
         photoRepository.getLatest();
 
-        expect(monsterSpy.get).toHaveBeenCalled();
-        expect(monsterSpy.get.callCount).toEqual(1);
-        expect(FBSpy.api).toHaveBeenCalled();
-        expect(FBSpy.api.callCount).toEqual(1);
+        assert.equal(true, facebook.api.called);
+        monsterMock.verify();
     });
-    xit("should can share a photo", function () {
-        var base64, photo, photoRepository;
 
-        base64 = {};
-        base64.encode = function () {};
-        spyOn(base64, 'encode');
+    it("should can like a photo", function () {
+        var photo, photoRepository, facebook;
 
         photo = new Photo("1234");
         photo.set_urls("http://mock.org/logo_s.jpg");
 
-        photoRepository = new PhotoRepository();
+        facebook = {};
+        facebook.api = sinon.stub();
+
+        photoRepository = new PhotoRepository(facebook);
+        photoRepository.like(photo);
+
+        assert.equal(true, facebook.api.called);
+    });
+
+    it("should can share a photo", function () {
+        var photo, photoRepository, base64Mock, facebook;
+
+        base64Mock = sinon.mock(Base64).expects("encode").once();
+
+        photo = new Photo("1234");
+        photo.set_urls("http://mock.org/logo_s.jpg");
+
+        facebook = {};
+        facebook.api = sinon.stub();
+
+        photoRepository = new PhotoRepository(facebook);
         photoRepository.share(photo);
 
-        expect(base64.encode).toHaveBeenCalled();
+        assert.equal(true, facebook.api.called);
+        base64Mock.verify();
     });
 });
-

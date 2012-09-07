@@ -1,0 +1,22 @@
+{
+  "name": "encaixote.me",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha spec/*Spec.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/EHER/encaixote.me.git"
+  },
+  "author": "Alexandre Eher <alexandre@eher.com.br>",
+  "license": "BSD",
+  "description": "",
+  "dependencies": {
+      "jquery": "*"
+  },
+  "devDependencies": {
+      "mocha": "*",
+      "sinon": "*"
+  }
+}

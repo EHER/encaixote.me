@@ -1,10 +1,11 @@
 /*jslint browser: true*/
-/*global FB: true, $: true, PhotoRepository: true*/
+/*global head: true, FB: true, $: true, PhotoRepository: true*/
 'use strict';
+var photoRepository, isUserLogged, checkFacebookLogin;
 
-var photoRepository = new PhotoRepository("#gallery");
+photoRepository = new PhotoRepository("#gallery");
 
-var isUserLogged = function (logged) {
+isUserLogged = function (logged) {
     if (logged) {
         $("#login").hide();
         $("#logout").show();
@@ -23,7 +24,7 @@ var isUserLogged = function (logged) {
     }
 };
 
-var checkFacebookLogin = function () {
+checkFacebookLogin = function () {
     FB.getLoginStatus(function (response) {
         if (response.status === 'connected') {
             isUserLogged(true);
@@ -49,8 +50,8 @@ $(document).ready(function () {
 
 window.fbAsyncInit = function () {
     FB.init({
-        appId      : '359200690783172', // App ID
-        channelUrl : '//encaixote.me/channel.php', // Channel File
+        appId      : '340748665982158', // App ID
+        channelUrl : '//localhost/encaixote.me/channel.php', // Channel File
         status     : true, // check login status
         cookie     : true, // enable cookies to allow the server to access the session
         xfbml      : true  // parse XFBML
